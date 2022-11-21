@@ -29,7 +29,7 @@ def get_image(image_path):
     return img
 
 
-# encode message
+# encode message GCD
 def encrypt_message_GCD(image_path, msg):
     img = get_image(image_path)
     msg_gen = unidecode_message(msg)
@@ -45,7 +45,7 @@ def encrypt_message_GCD(image_path, msg):
     save_path = path[0] + '_hidden' + '.png'
     cv2.imwrite(save_path, img)
 
-
+# encrypt message with key - Algorytm 2
 def encrypt_message_key(key, image_path, message):
     key_path = 'key'
     message_path = 'message.us'
@@ -60,6 +60,7 @@ def encrypt_message_key(key, image_path, message):
     os.remove('message.us')
     return
 
+# encrypt message with key - Algorytm 1
 def encrypt_message_without_key(image_path, message):
     secret = lsb.hide(image_path, message)
     path = image_path.split('.')
@@ -67,6 +68,7 @@ def encrypt_message_without_key(image_path, message):
     secret.save(save_path)
 
 
+# encrypt message in wav file
 def encrypt_message_in_audio(path, message):
     audio = wave.open(path, mode='rb')
     frame_bytes = bytearray(list(audio.readframes(audio.getnframes())))
@@ -88,3 +90,8 @@ def encrypt_message_in_audio(path, message):
         fd.setparams(audio.getparams())
         fd.writeframes(frame_modified)
     audio.close()
+
+# generate 32-bits key
+def generate_key():
+    Steganography.generate_key('key')
+    return os.path.abspath("key")

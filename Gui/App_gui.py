@@ -15,13 +15,10 @@ root.geometry("800x600")
 root.resizable(False, False)
 
 #loading items
-decode_icon = PhotoImage(file=r'icon.png')
-encode_icon = PhotoImage(file=r'icon2.png')
+decode_icon = PhotoImage(file=r'b2.png')
+encode_icon = PhotoImage(file=r'b1.png')
 new_icon = PhotoImage(file=r'icon3.png')
-background = PhotoImage(file=r'bg.png')
-# background2 = PhotoImage(file=r'E:\Szyfrator-Deszyfrator\Gui\bg2.png')
-select_icon = PhotoImage(file=r'icon3.png')
-label_select = Label(root, image=select_icon)
+background = PhotoImage(file=r'bg2.png')
 
 canvas = Canvas(root, width=800, height=600)
 canvas.pack()
@@ -34,8 +31,8 @@ isHideKey = IntVar()
 
 def main_window():
     canvas.delete("chose")
-    forget_all_widgets()
     clear_text()
+    forget_all_widgets()
     encode_button2.place(x=140, y=200)
     decode_button2.place(x=420, y=200)
 
@@ -61,11 +58,9 @@ def hide_key():
 
 def encode_window():
     canvas.create_text(55, 30, text='encode mode', font=('Helvetica', 12), fill='white', tag="chose")
-    canvas.create_text(404, 250, text='Chose algorithm:', font=('Helvetica', 26), fill='black', tag="chose")
     canvas.create_text(400, 250, text='Chose algorithm:', font=('Helvetica', 25), fill='white', tag="chose")
-    canvas.create_text(450, 290, text='for images\t              for .wav', font=('Helvetica', 14), fill='white', tag="chose")
+    canvas.create_text(450, 300, text='for images\t              for .wav', font=('Helvetica', 14), fill='white', tag="chose")
     forget_all_widgets()
-    label_select.place(x=324, y=230)
     select_file.place(x=330, y=150)
     entry_file_textbox.place(x=250, y=120)
     GCD_button.place(x=180, y=320)
@@ -86,12 +81,10 @@ def encode_window():
 
 
 def decode_window():
-    canvas.create_text(404, 250, text='Chose algorithm:', font=('Helvetica', 26), fill='black', tag="chose")
     canvas.create_text(400, 250, text='Chose algorithm:', font=('Helvetica', 25), fill='white', tag="chose")
-    canvas.create_text(450, 290, text='for images\t              for .wav', font=('Helvetica', 14), fill='white', tag="chose")
+    canvas.create_text(450, 300, text='for images\t              for .wav', font=('Helvetica', 14), fill='white', tag="chose")
     canvas.create_text(55, 30, text='decode mode', font=('Helvetica', 12), fill='white', tag="chose")
     forget_all_widgets()
-    label_select.place(x=324, y=230)
     select_file.place(x=330, y=150)
     entry_file_textbox.place(x=250, y=120)
     GCD_button.place(x=180, y=320)
@@ -155,6 +148,7 @@ def wave_click():
     algorithm = 4
     key_textbox.config(state="normal")
     insert_key_button.configure(state=DISABLED)
+    key_textbox.config(state="disabled")
 
 
 def select_file():
@@ -201,7 +195,7 @@ def select_key():
 
 def generate_key():
     key_textbox.config(state="normal")
-    key = EncryptMessageInImage_Key.generate_key()
+    key = EncryptMessage.generate_key()
     key_textbox.delete(0, 'end')
     key_textbox.insert(END, key)
     showinfo(
@@ -331,9 +325,20 @@ def run_deconding(algorithm):
     message_textbox.insert(END, msg)
 
 def forget_all_widgets():
+    Wave_button.configure(fg_color='#f0f0f0')
+    GCD_button.configure(fg_color='#f0f0f0')
+    Algorytm1_button.configure(fg_color='#f0f0f0')
+    Algorytm2_button.configure(fg_color='#f0f0f0')
+    key_textbox.config(state='normal')
+    entry_file_textbox.config(state='normal')
+    message_textbox.config(state='normal')
+    clear_text()
+    global algorithm
+    algorithm = 0
+
+
     decode_button2.place_forget()
     encode_button2.place_forget()
-    label_select.place_forget()
     select_file.place_forget()
     entry_file_textbox.place_forget()
     GCD_button.place_forget()
@@ -354,17 +359,13 @@ def forget_all_widgets():
 encode_button = Button(
     root,
     text="Encode",
-    padx=100,
-    pady=50,
     command=encode_window,
-    image=decode_icon
+    image=encode_icon
 )
 decode_button = Button(
     root,
     text="Decode",
-    padx=100,
-    pady=50,
-    image=encode_icon
+    image=decode_icon
 )
 select_file = customtkinter.CTkButton(
     master=root,
@@ -457,12 +458,12 @@ run_decoding_button = customtkinter.CTkButton(
 encode_button2 = customtkinter.CTkButton(
     master=root,
     text="",
-    width=50,
-    height=50,
     command=encode_window,
-    image=decode_icon,
-    fg_color='#f0f0f0',
-    hover_color='#c3c3c3'
+    image=encode_icon,
+    # fg_color='#f0f0f0',
+    fg_color='#e9e9e9',
+    hover_color='#c3c3c3',
+
 )
 decode_button2 = customtkinter.CTkButton(
     master=root,
@@ -470,7 +471,7 @@ decode_button2 = customtkinter.CTkButton(
     width=50,
     height=50,
     command=decode_window,
-    image=encode_icon,
+    image=decode_icon,
     fg_color='#f0f0f0',
     hover_color='#c3c3c3'
 )
