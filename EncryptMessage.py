@@ -51,8 +51,6 @@ def encrypt_message_key(key, image_path, message):
     message_path = 'message.us'
     with open('message.us', 'w', encoding='utf-8') as hiden_message:
         hiden_message.write(message)
-    with open('key.key', 'wb') as key_file:
-        key_file.write(str.encode(key))
     encrypted = Steganography.encrypt(key_path, image_path, message_path)
     path = image_path.split('.')
     save_path = path[0] + '_hidden' + '.png'
@@ -60,7 +58,8 @@ def encrypt_message_key(key, image_path, message):
     os.remove('message.us')
     return
 
-# encrypt message with key - Algorytm 1
+
+# encrypt message with key - LSB
 def encrypt_message_without_key(image_path, message):
     secret = lsb.hide(image_path, message)
     path = image_path.split('.')
@@ -70,26 +69,22 @@ def encrypt_message_without_key(image_path, message):
 
 # encrypt message in wav file
 def encrypt_message_in_audio(path, message):
-    audio = wave.open(path, mode='rb')
-    frame_bytes = bytearray(list(audio.readframes(audio.getnframes())))
-    # Append dummy data to fill out rest of the bytes. Receiver shall detect and remove these characters.
-
-    message = message + int((len(frame_bytes) - (len(message) * 8 * 8)) / 8) * '#'
-    # Convert text to bit array
-    bits = list(map(int, ''.join([bin(ord(i)).lstrip('0b').rjust(8, '0') for i in message])))
-    # Replace LSB of each byte of the audio data by one bit from the text bit array
-    for i, bit in enumerate(bits):
-        frame_bytes[i] = (frame_bytes[i] & 254) | bit
-    # Get the modified bytes
-    frame_modified = bytes(frame_bytes)
-
-    # Write bytes to a new wave audio file
     path = path.split('.')
     save_path = path[0] + '_hidden' + '.wav'
+    audio = wave.open(path, mode='rb')
+    frame_bytes = bytearray(list(audio.readframes(audio.getnframes())))
+    message = message + int((len(frame_bytes) - (len(message) * 8 * 8)) / 8) * '#'
+    bits = list(map(int, ''.join([bin(ord(i)).lstrip('0b').rjust(8, '0') for i in message])))
+
+    for i, bit in enumerate(bits):
+        frame_bytes[i] = (frame_bytes[i] & 254) | bit
+    frame_modified = bytes(frame_bytes)
+
     with wave.open(save_path, 'wb') as fd:
         fd.setparams(audio.getparams())
         fd.writeframes(frame_modified)
     audio.close()
+
 
 # generate 32-bits key
 def generate_key():
